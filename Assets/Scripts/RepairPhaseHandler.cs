@@ -127,5 +127,19 @@ public class RepairPhaseHandler : MonoBehaviour
     {
         currentTaskProgress++;
         taskProgressBar.fillAmount = currentTaskProgress / (float)currentTaskGoal;
+
+        // Squash and stretch
+        LeanTween.cancel(mouseSpriteRenderer.gameObject);
+        mouseSpriteRenderer.transform.localScale = Vector3.one * 2;
+        LeanTween.scaleY(mouseSpriteRenderer.gameObject, 1.7f, 0.05f);
+        LeanTween.scaleX(mouseSpriteRenderer.gameObject, 2.3f, 0.05f).setOnComplete(() =>
+        {
+            LeanTween.scaleY(mouseSpriteRenderer.gameObject, 2.25f, 0.15f).setEase(LeanTweenType.easeOutQuad);
+            LeanTween.scaleX(mouseSpriteRenderer.gameObject, 1.75f, 0.15f).setEase(LeanTweenType.easeOutQuad).setOnComplete(() =>
+            {
+                LeanTween.scale(mouseSpriteRenderer.gameObject, Vector3.one * 2, 0.1f).setEase(LeanTweenType.easeInQuad);
+            });
+        });
+
     }
 }
