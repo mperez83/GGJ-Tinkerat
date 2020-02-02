@@ -20,10 +20,8 @@ public class CursorPointSpawner : MonoBehaviour
     public void CursorPointTriggered()
     {
         repairPhaseHandler.IncreaseTaskProgress();
-        if (repairPhaseHandler.currentTaskProgress >= repairPhaseHandler.currentTaskGoal)
+        if (repairPhaseHandler.currentTaskProgress == 0)    // Would only equal 0 if we moved on to the next task
         {
-            repairPhaseHandler.tasksCompleted++;
-            repairPhaseHandler.ChooseRandomTask();
             Destroy(gameObject);
             return;
         }
