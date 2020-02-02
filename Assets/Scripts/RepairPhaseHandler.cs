@@ -103,7 +103,9 @@ public class RepairPhaseHandler : MonoBehaviour
         tasksCompleted++;
         if (tasksCompleted >= listOfTasks.Length)
         {
-            SceneManager.LoadScene("PlayScene");
+            FadeOutSceneChange.instance.FadeOut("PlayScene", 1f);
+            nibbleButton.SetActive(false);
+            gameObject.SetActive(false);
             return;
         }
 

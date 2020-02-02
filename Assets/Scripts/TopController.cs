@@ -91,8 +91,11 @@ public class TopController : MonoBehaviour
             yeeted = true;
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             rb.isKinematic = false;
-            rb.AddForce(new Vector2(Random.Range(-5f, 5f), Random.Range(4f, 6f)), ForceMode2D.Impulse);
-            rb.AddTorque(Random.Range(-50, 50));
+            float xForce = Random.Range(-5f, 5f);
+            float torque = Random.Range(25f, 50f);
+            if (xForce > 0) torque *= -1;
+            rb.AddForce(new Vector2(xForce, Random.Range(4f, 6f)), ForceMode2D.Impulse);
+            rb.AddTorque(torque);
             LeanTween.delayedCall(gameObject, 3f, () =>
             {
                 FadeOutSceneChange.instance.FadeOut("ResultsScene", 1f);
