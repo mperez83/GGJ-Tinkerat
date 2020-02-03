@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public float repairTime;
     public float topSpinTime;
 
+    public AudioSource selectAudioSource;
+
     [HideInInspector]
     public float screenTopEdge;
     [HideInInspector]
@@ -35,6 +37,11 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         UpdateScreenEdges();
+    }
+
+    public void PlaySelectSound()
+    {
+        selectAudioSource.Play();
     }
 
 

@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class RepairPhaseStart : MonoBehaviour
 {
-    bool pressedStart;
     public Image fadeOverlay;
+    public Button startButton;
     public RectTransform leftSide;
     public RectTransform rightSide;
+    public AudioSource audioSource;
 
     void Start()
     {
@@ -31,22 +32,26 @@ public class RepairPhaseStart : MonoBehaviour
 
     public void StartButton()
     {
-        if (!pressedStart)
-        {
-            pressedStart = true;
-            LeanTween.cancel(gameObject);
-            Destroy(leftSide.gameObject);
-            Destroy(rightSide.gameObject);
+        GameManager.instance.PlaySelectSound();
+        startButton.gameObject.SetActive(false);
 
-            LeanTween.value(gameObject, fadeOverlay.color.a, 0, 1).setEase(LeanTweenType.easeInQuad).setOnUpdate((float value) =>
-            {
-                fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, value);
-            }).setOnComplete(() =>
-            {
-                Destroy(fadeOverlay.transform.parent.gameObject);
-                GetComponent<RepairPhaseHandler>().enabled = true;
-                Destroy(this);
-            }); 
-        }
+        LeanTween.cancel(gameObject);
+        Destroy(leftSide.gameObject);
+        Destroy(rightSide.gameObject);
+
+        LeanTween.value(gameObject, fadeOverlay.color.a, 0, 1).setEase(LeanTweenType.easeInQuad).setOnUpdate((float value) =>
+        {
+            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, value);
+        }).setOnComplete(() =>
+        {
+            Destroy(fadeOverlay.transform.parent.gameObject);
+            GetComponent<RepairPhaseHandler>().enabled = true;
+            Destroy(this);
+        });
+    }
+
+    public void Boink()
+    {
+        audioSource.PlayOneShot(GetComponent<RepairPhaseHandler>().nibbleSound);
     }
 }

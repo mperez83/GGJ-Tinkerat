@@ -23,10 +23,16 @@ public class TopController : MonoBehaviour
 
     bool yeeted;
 
+    public AudioClip jumpSound;
+    public AudioClip yeetSound;
+    public AudioSource audioSource;
+
+
+
     void Start()
     {
         // Horizontal stuff
-        smoothAmount = ((GameManager.instance.repairTime * 0.6f) * 6) / 100f;
+        smoothAmount = Mathf.Clamp(((GameManager.instance.repairTime * 4f) / 100f) - 0.25f, 0.15f, 2f);
 
         // Vertical stuff
         timeToJumpApex = Mathf.Clamp(0.75f - ((GameManager.instance.repairTime * 2) / 100f), 0.25f, 0.75f);
@@ -34,7 +40,7 @@ public class TopController : MonoBehaviour
         jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 
         // Check if we should enable double jump
-        if (GameManager.instance.repairTime <= 15)
+        if (GameManager.instance.repairTime <= 16)
         {
             GetComponent<SpriteRenderer>().color = Color.cyan;
             doubleJumpEnabled = true;
@@ -59,11 +65,13 @@ public class TopController : MonoBehaviour
                 {
                     grounded = false;
                     moveAmountY = jumpVelocity;
+                    audioSource.PlayOneShot(jumpSound);
                 }
                 else if (doubleJumpEnabled && !doubleJumped)
                 {
                     doubleJumped = true;
                     moveAmountY = jumpVelocity;
+                    audioSource.PlayOneShot(jumpSound);
                 }
             }
 
@@ -89,10 +97,11 @@ public class TopController : MonoBehaviour
         if (!yeeted)
         {
             yeeted = true;
+            audioSource.PlayOneShot(yeetSound);
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             rb.isKinematic = false;
             float xForce = Random.Range(-5f, 5f);
-            float torque = Random.Range(25f, 50f);
+            float torque = Random.Range(40f, 80f);
             if (xForce > 0) torque *= -1;
             rb.AddForce(new Vector2(xForce, Random.Range(4f, 6f)), ForceMode2D.Impulse);
             rb.AddTorque(torque);

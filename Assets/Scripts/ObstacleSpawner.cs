@@ -5,11 +5,12 @@ using UnityEngine;
 public class ObstacleSpawner : MonoBehaviour
 {
     float timer;
-    public RollingObstacle obstaclePrefab;
+    public RollingObstacle rollingObstaclePrefab;
+    public BouncingObstacle bouncingObstaclePrefab;
     public int currentObstacleIndex;
     public ObstacleSpawn[] obstacleSpawns;
 
-    public enum Type { Rolling };
+    public enum Type { Rolling, Bouncing };
 
     float rateModifier = 1;
     float speedModifier = 1;
@@ -19,14 +20,28 @@ public class ObstacleSpawner : MonoBehaviour
         timer += Time.deltaTime * rateModifier;
 
         rateModifier += 0.005f * Time.deltaTime;
-        speedModifier += 0.03f * Time.deltaTime;
+        speedModifier += 0.01f * Time.deltaTime;
 
         if (timer >= obstacleSpawns[currentObstacleIndex].timeAfterPrevToSpawn)
         {
             timer = 0;
-            RollingObstacle newObstacle = Instantiate(obstaclePrefab).GetComponent<RollingObstacle>();
-            newObstacle.movingRight = obstacleSpawns[currentObstacleIndex].movingRight;
-            newObstacle.speed = obstacleSpawns[currentObstacleIndex].speed * speedModifier;
+
+            switch (obstacleSpawns[currentObstacleIndex].type)
+            {
+                case Type.Rolling:
+                    RollingObstacle rollingObstacle = Instantiate(rollingObstaclePrefab).GetComponent<RollingObstacle>();
+                    rollingObstacle.movingRight = obstacleSpawns[currentObstacleIndex].movingRight;
+                    rollingObstacle.speed = obstacleSpawns[currentObstacleIndex].speed * speedModifier;
+                    break;
+
+                case Type.Bouncing:
+                    BouncingObstacle bouncingObstacle = Instantiate(bouncingObstaclePrefab).GetComponent<BouncingObstacle>();
+                    bouncingObstacle.movingRight = obstacleSpawns[currentObstacleIndex].movingRight;
+                    bouncingObstacle.speed = obstacleSpawns[currentObstacleIndex].speed * speedModifier;
+                    bouncingObstacle.bounceHeight = obstacleSpawns[currentObstacleIndex].bounceHeight;
+                    bouncingObstacle.timeToBounceApex = obstacleSpawns[currentObstacleIndex].timeToBounceApex;
+                    break;
+            }
 
             currentObstacleIndex++;
             if (currentObstacleIndex >= obstacleSpawns.Length)
@@ -39,9 +54,11 @@ public class ObstacleSpawner : MonoBehaviour
     [System.Serializable]
     public struct ObstacleSpawn
     {
+        public Type type;
         public float timeAfterPrevToSpawn;
         public bool movingRight;
         public float speed;
-        public Type type;
+        public float bounceHeight;
+        public float timeToBounceApex;
     }
 }
